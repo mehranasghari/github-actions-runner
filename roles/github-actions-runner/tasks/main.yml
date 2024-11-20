@@ -1,0 +1,54 @@
+- name: Include encrypted vars
+  include_vars:
+    file: secret.yml
+
+- name: Create actions directory
+  file:
+    path: "{{ actions_runner_install_dir }}"
+    state: directory
+
+- name: Download the actions runner tarball
+  get_url:
+    url: "{{ actions_runner_tarball_url }}"
+    dest: "{{ actions_runner_tarball_path }}"
+    mode: '0644'
+
+- name: Verify checksum
+  shell: |
+    echo "{{ actions_runner_checksum }}  {{ actions_runner_tarball_path }}" | shasum -a 256 -c
+  register: checksum_result
+  failed_when: "'OK' not in checksum_result.stdout"
+  changed_when: false
+
+- name: Extract GitHub Actions runner tarball
+  unarchive:
+    src: "{{ actions_runner_tarball_path }}"
+    dest: "{{ actions_runner_install_dir }}"
+    remote_src: yes
+
+- name: Fetch registration token from GitHub API
+  uri:
+    url: "{{ github_api_url }}"
+    method: POST
+    headers:
+      Accept: "{{ github_api_accept }}"
+      Authorization: "Bearer {{ github_personal_access_token }}"
+      X-GitHub-Api-Version: "{{ github_api_version }}"
+    return_content: yes
+    status_code: [200, 201]
+  register: response
+
+- name: Extract token from the response
+  set_fact:
+    registration_token: "{{ response.json.token }}"
+
+- name: Configure the GitHub Actions runner
+  shell: |
+    ./config.sh --url {{ github_repo_url }} --token {{ registration_token }}
+  args:
+    chdir: "{{ actions_runner_install_dir }}"
+  register: runner_result
+
+- name: Display runner registration status
+  debug:
+    msg: "Runner registration exit code: {{ runner_result.rc }}"

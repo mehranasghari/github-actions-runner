@@ -1,0 +1,3 @@
+.vscode
+**/secrets.yml
+roles/github-actions-runner/defaults/main.yml

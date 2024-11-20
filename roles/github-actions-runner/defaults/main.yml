@@ -1,0 +1,7 @@
+actions_runner_version: "2.320.0"
+actions_runner_install_dir: "/home/{{ ansible_env.USER }}/actions-runner"
+actions_runner_checksum: "93ac1b7ce743ee85b5d386f5c1787385ef07b3d7c728ff66ce0d3813d5f46900"
+github_repo_owner: "mehranasghari"
+github_repo_name: "db-backup"
+github_api_version: "2022-11-28"
+github_api_accept: "application/vnd.github+json"

@@ -1,0 +1,4 @@
+actions_runner_tarball_url: "https://github.com/actions/runner/releases/download/v{{ actions_runner_version }}/actions-runner-linux-x64-{{ actions_runner_version }}.tar.gz"
+actions_runner_tarball_path: "{{ actions_runner_install_dir }}/actions-runner-linux-x64-{{ actions_runner_version }}.tar.gz"
+github_repo_url: "https://github.com/{{ github_repo_owner }}/{{ github_repo_name }}"
+github_api_url: "https://api.github.com/repos/{{ github_repo_owner }}/{{ github_repo_name }}/actions/runners/registration-token"
